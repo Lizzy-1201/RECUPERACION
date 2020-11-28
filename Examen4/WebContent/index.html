@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<style>
+        #ordenespendientes {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        }
+          table, td, th {  
+          background: pink;
+          overflow: hidden;
+          margin: auto;
+          padding: 20px 0;
+          border: white 5px;
+          color: white;
+        }
+        
+        h1{
+        background: pink;
+        color: white;
+        padding:  30px ;
+        }
+        
+        h4{
+        padding:  25px ;
+        color: white;
+        }
+        
+        .mostrar{
+        margin-top:40px;
+        padding: 30px;
+        background: pink;
+        color: white;
+        padding: 20px 30px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+         margin: 4px 2px;
+         border: white;
+        }
+
+        table {
+          justify-content: space-evenly;
+          
+          flex-wrap: wrap;
+          
+           }
+      
+    </style>
+<title>Ordenes Pendientes de Entrega</title>
+</head>
+<body>
+   <div id="ordenespendientes">
+     <button class="mostrar" v-on:click="getnoenviadas" type="button" >Mostrar Ordenes</button> 
+      <table id="noenviadas" class="mostrarordenes"> 
+        	<div class="row">
+        	<div class="col-xs-12">
+        	<h1 style='text-align:center'>Ordenes recibidas Pendientes de Entrega</h1>
+        	<table class="table table-striped">
+        	<thead>
+        	<tr>
+        	<th style="width:40px;" ></th>
+        	<th style="width:200px;" >Numero de orden</th>
+        	<th style="width:200px;" >Cliente</th>
+        	<th style="width:200px;" >Producto</th>
+        	<th style="width:200px;" >Cantidad</th>
+        	<th style="width:200px;" >Precio Unitario</th>
+        	<th style="width:200px;" >Costo de envio</th>
+        	<th style="width:200px;" >Total</th>
+        	<th style="width:200px;" >Estado</th>
+        	</tr>
+        	</thead>
+        	<tbody>
+              <tr v-for="OrdenIngresada in noenviadas">
+                  <td>{{ OrdenIngresada.numorden}}</td>
+                  <td>{{ OrdenIngresada.cliente }}</td>
+                  <td>{{ OrdenIngresada.producto }}</td>
+                  <td>{{ OrdenIngresada.cantidad }}</td>
+                  <td>{{ OrdenIngresada.preciouni }}</td>
+                  <td>{{ OrdenIngresada.costoenvio }}</td>
+                  <td>{{ OrdenIngresada.total }}</td>
+                  <td><button id="estado" class="estados" v-on:click="modificarEstado" type="button" value="1">Cambiar Estado</button></td>
+              </tr>
+              <tr>
+                  <td colspan="6"><h4>TOTAL DE ORDENES</h4></td>
+                  <td>{{ total }}</td>
+              </tr>
+          </tbody>
+          
+      </table>
+  </div>
+   <!-- Vue-->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>      
+    
+    <script>
+        const url = 'http://localhost:8080/Examen4/ProcesarServlet';
+
+        var app = new Vue({
+           el: '#ordenespendientes',
+           data() {
+               return {
+                   ordenes: [],
+                   newestado: ''
+               }
+           },
+           methods:{
+               getnoenviadas: function(){
+                   axios.get(url).then(response => {
+                       this.ordenes = response.data;
+                       console.log(response.data);
+                   });
+               }
+           },
+           computed: {
+               mostrarnoenviadas: function(){
+                   return this.ordenes.filter(function(o){
+                       return o.entregado === 0;
+                   });
+               }
+           }
+        });
+    </script>
+</body>
+</html>
